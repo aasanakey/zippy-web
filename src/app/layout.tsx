@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeModeScript } from 'flowbite-react';
 import { Toaster } from 'react-hot-toast';
+import { AppProvider } from "@/context/appContext";
 
 const poppins = Poppins({ weight: "400", subsets: ["latin"] });
 
@@ -21,8 +22,11 @@ export default function RootLayout({
       <head>
         <ThemeModeScript />
       </head>
-      <body className={poppins.className}>{children}
-        <Toaster />
+      <body className={poppins.className}>
+        <AppProvider>
+          {children}
+          <Toaster />
+        </AppProvider>
       </body>
     </html>
   );

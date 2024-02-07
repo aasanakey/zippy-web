@@ -1,9 +1,15 @@
+import { useAppState } from '@/context/appContext'
 import clsx from 'clsx'
 import { Button } from 'flowbite-react'
-import React, { HtmlHTMLAttributes } from 'react'
+import React, { HtmlHTMLAttributes, useEffect } from 'react'
 import { CiBellOn, CiUser } from 'react-icons/ci'
 
 function TopNavbar({ toggleDrawer, className, ...props }: { toggleDrawer: () => void } & HtmlHTMLAttributes<HTMLElement>) {
+  const { user } = useAppState();
+  console.log(user);
+  useEffect(() => {
+  }, [user])
+  
   return (
     <nav
       className={clsx(
@@ -33,7 +39,7 @@ function TopNavbar({ toggleDrawer, className, ...props }: { toggleDrawer: () => 
         </Button>
         <div className="hidden md:flex flex-col items-start mx-2">
           <p className="text-[#0D2646] font-bold text-base">
-            Hi,&nbsp;Kwame
+            Hi,&nbsp;{user?.name}
           </p>
           <p className="text-[#8C8FA5]">Track and monitoring your packages</p>
         </div>

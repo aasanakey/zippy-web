@@ -1,11 +1,40 @@
 'use client';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Table } from 'flowbite-react'
 import Link from 'next/link'
 import { FaChevronRight } from 'react-icons/fa';
+import api from '@/utils/api';
+import { useAppState } from '@/context/appContext';
+import clsx from 'clsx';
 
 
 function TrackingHistory() {
+    const { searchResult } = useAppState()
+    const [orders, setOrders] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+
+    useEffect(() => {
+        const getOrders = async (pageSize = 1, page = currentPage) => {
+            try {
+                const response = await api.get(`api/get_orders?pageSize=${pageSize}&page=${page}`)
+                if (response.status == 200) {
+                    if (response?.data?.responseCode == "004") {
+                        setCurrentPage(response?.data?.currentPage)
+                        setTotalPages(response?.data?.totalPages)
+                        setOrders(response?.data?.data)
+                    }
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        if (searchResult) {
+            //setOrders([{...searchResult}])
+        } else {
+            getOrders(10)
+        }
+    }, [searchResult])
     return (
         <div>
             <div className='flex items-center justify-between flex-wrap'>
@@ -26,20 +55,34 @@ function TrackingHistory() {
                             </Table.HeadCell>
                         </Table.Head>
                         <Table.Body>
-                            <Table.Row className="bg-w hite">
+                           {Array.isArray(orders) && orders.length > 0 ? orders.map((item:any) => 
+                           <Table.Row key={item.orderId} className="bg-w hite">
                                 <Table.Cell className="whitespace-nowrap font-medium text-primary">
-                                    ZIPJF20243002
+                                    {item?.orderId}
                                 </Table.Cell>
                                 <Table.Cell>
-                                    Accra - Tema
+                                    {`${item.senderAddress} - ${item.receiverAddress}`}
                                 </Table.Cell>
-                                <Table.Cell>Pending</Table.Cell>
+                                <Table.Cell>
+                                    <span  className={clsx({
+                                    "text-[#FFBB29]": item.status == "In Transit",
+                                    "text-[#4CA7A8]": item.status == "Order Received",
+                                    "text-red-600": item.status == "Cancelled"
+                                })}>
+                                    {item?.status}
+                                </span>
+                                </Table.Cell>
                                 <Table.Cell>
                                     <Link href="#" className="font-medium text-primary">
                                         <FaChevronRight />
                                     </Link>
                                 </Table.Cell>
+                            </Table.Row> )
+                            :
+                            <Table.Row>
+                                <Table.Cell colSpan={3} className='text-center'>No orders found</Table.Cell>
                             </Table.Row>
+                            }
                         </Table.Body>
                     </Table>
                 </div>
