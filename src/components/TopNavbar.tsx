@@ -6,7 +6,7 @@ import { CiBellOn, CiUser } from 'react-icons/ci'
 
 function TopNavbar({ toggleDrawer, className, ...props }: { toggleDrawer: () => void } & HtmlHTMLAttributes<HTMLElement>) {
   const { user } = useAppState();
-  console.log(user);
+ 
   useEffect(() => {
   }, [user])
   

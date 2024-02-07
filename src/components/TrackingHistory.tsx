@@ -10,7 +10,7 @@ import clsx from 'clsx';
 
 function TrackingHistory() {
     const { searchResult } = useAppState()
-    const [orders, setOrders] = useState([])
+    const [orders, setOrders] = useState<[]>([])
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
 
@@ -29,8 +29,9 @@ function TrackingHistory() {
                 console.log(error)
             }
         }
+        console.log(searchResult);
         if (searchResult) {
-            //setOrders([{...searchResult}])
+            setOrders([])            
         } else {
             getOrders(10)
         }
@@ -78,6 +79,29 @@ function TrackingHistory() {
                                     </Link>
                                 </Table.Cell>
                             </Table.Row> )
+                            : searchResult ? 
+                            <Table.Row className="bg-w hite">
+                                <Table.Cell className="whitespace-nowrap font-medium text-primary">
+                                    {searchResult?.orderId}
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {`${searchResult.senderAddress} - ${searchResult.receiverAddress}`}
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <span  className={clsx({
+                                    "text-[#FFBB29]": searchResult.status == "In Transit",
+                                    "text-[#4CA7A8]": searchResult.status == "Order Received",
+                                    "text-red-600": searchResult.status == "Cancelled"
+                                })}>
+                                    {searchResult?.status}
+                                </span>
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <Link href="#" className="font-medium text-primary">
+                                        <FaChevronRight />
+                                    </Link>
+                                </Table.Cell>
+                            </Table.Row>
                             :
                             <Table.Row>
                                 <Table.Cell colSpan={3} className='text-center'>No orders found</Table.Cell>

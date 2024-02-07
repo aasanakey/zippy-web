@@ -19,7 +19,7 @@ function TrackPackage() {
           const response = await api.get(`api/get_order_details?orderId=${orderId}`)
           const data = response.data;
           if(data.responseCode === "004"){
-              dispatch({type:UPDATE_ORDER_SEARCH,payload:data})
+              dispatch({type:UPDATE_ORDER_SEARCH,payload:data.data})
               toast.success(data.responseDesc);
           }else if(data.responseCode === "005"){
               toast.success(data.responseDesc);
